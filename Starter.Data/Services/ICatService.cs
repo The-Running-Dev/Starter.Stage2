@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 using Starter.Data.Entities;
 
-namespace Starter.Data.Interfaces.Services
+namespace Starter.Data.Services
 {
     /// <summary>
     /// Defines the contract for Cat business logic

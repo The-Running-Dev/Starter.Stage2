@@ -6,6 +6,6 @@ namespace Starter.Data.Connections
     {
         IDbConnection Connect();
 
-        IDbCommand CreateSpCommand(string sql, dynamic[] paramArray);
+        IDbCommand CreateSpCommand(string sql, IDbDataParameter[] paramArray);
     }
 }

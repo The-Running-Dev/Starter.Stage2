@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
@@ -8,6 +7,9 @@ using Starter.Framework.Extensions;
 
 namespace Starter.Repository.Repositories
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Repository
     {
         public Repository(IConnection connection)
@@ -15,34 +17,19 @@ namespace Starter.Repository.Repositories
             _connection = connection;
         }
 
-        public async Task<IEnumerable<T>> ExecuteQueryAsync<T>(string sql, dynamic[] parameters = null)
+        public async Task<IEnumerable<T>> ExecuteQueryAsync<T>(string sql, IDbDataParameter[] parameters = null)
         {
-            try
+            using (var command = _connection.CreateSpCommand(sql, parameters))
             {
-                using (var command = _connection.CreateSpCommand(sql, parameters))
-                {
-                    return await ExecuteReader<T>(command);
-                }
-            }
-            catch
-            {
-                // Log the exception
-                throw;
+                return await ExecuteReader<T>(command);
             }
         }
 
-        public async Task ExecuteNonQueryAsync(string sql, dynamic[] parameters = null)
+        public async Task ExecuteNonQueryAsync(string sql, IDbDataParameter[] parameters = null)
         {
-            try
+            using (var command = _connection.CreateSpCommand(sql, parameters))
             {
-                using (var command = _connection.CreateSpCommand(sql, parameters))
-                {
-                    await Task.Run(command.ExecuteNonQuery);
-                }
-            }
-            catch
-            {
-                throw;
+                await Task.Run(command.ExecuteNonQuery);
             }
         }
 

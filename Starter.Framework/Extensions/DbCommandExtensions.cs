@@ -13,11 +13,11 @@ namespace Starter.Framework.Extensions
         /// </summary>
         /// <param name="command">The command to use</param>
         /// <param name="parameters">The parameters to add</param>
-        public static void AddParameters(this IDbCommand command, dynamic[] parameters = null)
+        public static void AddParameters(this IDbCommand command, IDbDataParameter[] parameters = null)
         {
             if (parameters == null)
             {
-                throw new ArgumentNullException(nameof(parameters));
+                return;
             }
 
             foreach (var p in parameters)

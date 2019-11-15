@@ -1,60 +1,66 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+
 using NUnit.Framework;
+using FluentAssertions;
 
 using Starter.Data.Entities;
-using Starter.API.Controllers;
-using Starter.Data.Repositories;
 
 namespace Starter.API.Tests.Controllers
 {
     [TestFixture]
-    public class CatControllerTests
+    public class CatControllerTests : TestsBase
     {
-        public CatControllerTests(ICatRepository repository)
-        {
-            _controller = new CatController(repository);
-        }
-
         [Test]
         public async Task Get_AllCats_Successful()
         {
-            var entities = await _controller.GetAll();
+            var entities = await CatController.GetAll();
+            var enumerable = entities as Cat[] ?? entities.ToArray();
 
-            Assert.IsNotNull(entities);
-            Assert.AreEqual(2, entities.Count());
-            
-            Assert.AreEqual("value1", entities.ElementAt(0));
-            Assert.AreEqual("value2", entities.ElementAt(1));
+            enumerable.Count().Should().Be(Cats.Count);
         }
 
         [Test]
         public async Task Get_CatById_Successful()
         {
-            var result = await _controller.GetById(Guid.Empty);
+            var lastCat = Cats.LastOrDefault();
+            var cat = await CatController.GetById(lastCat.Id);
 
-            Assert.AreEqual("value", result);
+            cat.Id.Should().Be(lastCat.Id);
         }
 
         [Test]
         public async Task Create_Cat_Successful()
         {
-            await _controller.Post(new Cat());
+            var cat = new Cat() { Id = Guid.NewGuid(), Name = Guid.NewGuid().ToString() };
+
+            await CatController.Post(cat);
+
+            Cats.FirstOrDefault(x => x.Id == cat.Id).Should().BeEquivalentTo(cat);
         }
 
         [Test]
         public async Task Update_Cat_Successful()
         {
-            await _controller.Put(new Cat());
+            var cat = Cats.FirstOrDefault();
+            var newName = Guid.NewGuid().ToString();
+
+            cat.Name = newName;
+
+            await CatController.Put(cat);
+
+            Cats.FirstOrDefault(x => x.Name == newName).Should().NotBeNull();
         }
 
         [Test]
         public async Task Delete_Cat_Successful()
         {
-            await _controller.Delete(Guid.Empty);
-        }
+            var cat = Cats.FirstOrDefault();
 
-        private readonly CatController _controller;
+            await CatController.Delete(cat.Id);
+
+            Cats.FirstOrDefault(x => x.Id == cat.Id).Should().BeNull();
+        }
     }
 }

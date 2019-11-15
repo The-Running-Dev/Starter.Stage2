@@ -22,7 +22,7 @@ namespace Starter.Data.Repositories
 
         Task<TEntity> GetByIdAsync(Guid id);
 
-        Task AddAsync(TEntity entity);
+        Task CreateAsync(TEntity entity);
 
         Task UpdateAsync(TEntity entity);
 

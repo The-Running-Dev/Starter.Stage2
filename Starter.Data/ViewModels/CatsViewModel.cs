@@ -13,41 +13,12 @@ namespace Starter.Data.ViewModels
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        //public Visibility IsDeleteVisible
-        //{
-        //    get => _isDeleteVisible;
+        public bool IsCatSelected => _selectedCat != null;
 
-        //    set
-        //    {
-        //        _isDeleteVisible = value;
-        //        OnPropertyChanged(nameof(IsDeleteVisible));
-        //    }
-        //}
-
-        //public Visibility IsSaveVisible
-        //{
-        //    get => _isSaveVisible;
-
-        //    set
-        //    {
-        //        _isSaveVisible = value;
-        //        OnPropertyChanged(nameof(IsSaveVisible));
-        //    }
-        //}
-
-        public Cat SelectedItem
+        public Cat SelectedCat
         {
-            get => _selectedItem;
-
-            set
-            {
-                _selectedItem = value;
-
-                OnPropertyChanged(nameof(SelectedItem));
-
-                //IsDeleteVisible = _selectedItem.Id != Guid.Empty ? Visibility.Visible : Visibility.Hidden;
-                //IsSaveVisible = !string.IsNullOrEmpty(_selectedItem.Name) ? Visibility.Visible : Visibility.Hidden;
-            }
+            get => _selectedCat;
+            set => GetById(value.Id);
         }
 
         public ObservableCollection<IEntity> Cats
@@ -78,37 +49,36 @@ namespace Starter.Data.ViewModels
         {
             _apiClient = apiClient;
 
-            //IsDeleteVisible = Visibility.Hidden;
-            //IsSaveVisible = Visibility.Hidden;
-
-            ResetSelected();
-            LoadData();
+            GetAll();
         }
 
-        private async void LoadData()
+        private async void GetAll()
         {
             Cats = new ObservableCollection<IEntity>(await _apiClient.GetAllAsync<Cat>());
             Abilities = new ObservableCollection<object>(GetEnum<Ability>());
         }
 
-        public void ResetSelected()
+        public async void GetById(Guid id)
         {
-            SelectedItem = new Cat();
+            _selectedCat = await _apiClient.GetByIdAsync<Cat>(id);
+
+            OnPropertyChanged(nameof(SelectedCat));
+            OnPropertyChanged(nameof(IsCatSelected));
         }
 
         public async void Save()
         {
-            await _apiClient.AddAsync(SelectedItem);
+            await _apiClient.CreateAsync(SelectedCat);
 
-            SelectedItem = new Cat();
+            SelectedCat = new Cat();
             Cats = new ObservableCollection<IEntity>(await _apiClient.GetAllAsync<IEntity>());
         }
 
         public async void Delete()
         {
-            await _apiClient.DeleteAsync(SelectedItem.Id);
+            await _apiClient.DeleteAsync(SelectedCat.Id);
 
-            SelectedItem = new Cat();
+            SelectedCat = new Cat();
             Cats = new ObservableCollection<IEntity>(await _apiClient.GetAllAsync<IEntity>());
         }
 
@@ -143,12 +113,8 @@ namespace Starter.Data.ViewModels
 
         private ObservableCollection<object> _abilities;
 
-        private Cat _selectedItem;
+        private Cat _selectedCat;
 
         private readonly IApiClient _apiClient;
-
-        //private Visibility _isDeleteVisible;
-
-        //private Visibility _isSaveVisible;
     }
 }

@@ -66,14 +66,15 @@
     <Build Include="Procedures\GetAllCats.sql" />
     <Build Include="Procedures\GetCatById.sql" />
     <PostDeploy Include="Scripts\Script.Post-Deployment.sql" />
-    <Build Include="Procedures\AddCat.sql" />
+    <Build Include="Procedures\CreateCat.sql" />
     <Build Include="Procedures\UpdateCat.sql" />
     <Build Include="Procedures\DeleteCat.sql" />
   </ItemGroup>
   <ItemGroup>
-    <RefactorLog Include="Starter.Database.refactorlog" />
+    <RefactorLog Include="Database.refactorlog" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Starter.Database.publish.xml" />
+    <None Include="Database.publish.xml" />
+    <None Include="Database.Tests.publish.xml" />
   </ItemGroup>
 </Project>

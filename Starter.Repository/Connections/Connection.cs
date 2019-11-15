@@ -24,7 +24,7 @@ namespace Starter.Repository.Connections
             return connection;
         }
 
-        public IDbCommand CreateSpCommand(string sql, dynamic[] parameters)
+        public IDbCommand CreateSpCommand(string sql, IDbDataParameter[] parameters)
         {
             var connection = Connect();
             var command = connection.CreateCommand();

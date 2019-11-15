@@ -15,18 +15,22 @@ namespace Starter.Framework.Tests.Extensions
     public class DbCommandExtensionsTests
     {
         [Test]
-        public void Add_NullParametersToCommand_Failure()
+        public void Add_NullParametersToCommand_Successful()
         {
-            Assert.Throws<ArgumentNullException>(() => new SqlCommand().AddParameters(null));
+            var command = new SqlConnection().CreateCommand();
+
+            command.AddParameters();
+
+            command.Parameters.Count.Should().Be(0);
         }
 
         [Test]
         //public void Should_Add_Single_Parameter_to_Command()
         public void Add_SingleParameterToCommand_Successful()
         {
-            var command = new SqlCommand();
+            var command = new SqlConnection().CreateCommand();
 
-            command.AddParameters(new dynamic[] { new SqlParameter() });
+            command.AddParameters(new IDbDataParameter[] { new SqlParameter() });
 
             command.Parameters.Count.Should().Be(1);
         }
@@ -34,9 +38,9 @@ namespace Starter.Framework.Tests.Extensions
         [Test]
         public void Add_MultipleParametersToCommand_Successful()
         {
-            var command = new SqlCommand();
+            var command = new SqlConnection().CreateCommand();
 
-            command.AddParameters(new dynamic[] { new SqlParameter(), new SqlParameter() });
+            command.AddParameters(new IDbDataParameter[] { new SqlParameter(), new SqlParameter() });
 
             command.Parameters.Count.Should().Be(2);
         }

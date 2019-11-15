@@ -30,7 +30,7 @@ namespace Starter.API.Controllers
         // POST api/cat
         public async Task Post([FromBody] Cat entity)
         {
-            await _repository.AddAsync(entity);
+            await _repository.CreateAsync(entity);
         }
 
         // PUT api/cat/{id}

@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Starter.Framework.Clients
 {
@@ -8,7 +8,9 @@ namespace Starter.Framework.Clients
     {
         Task<IEnumerable<T>> GetAllAsync<T>();
 
-        Task AddAsync<T>(T entity);
+        Task<T> GetByIdAsync<T>(Guid id);
+
+        Task CreateAsync<T>(T entity);
 
         Task UpdateAsync<T>(T entity);
 

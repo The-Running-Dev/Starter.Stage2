@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Diagnostics;
 
 namespace Starter.Framework.Extensions
 {
@@ -16,6 +17,11 @@ namespace Starter.Framework.Extensions
         /// <returns></returns>
         public static bool HasColumn(this IDataRecord dataRecord, string columnName)
         {
+            if (dataRecord == null)
+            {
+                return false;
+            }
+
             for (var i = 0; i < dataRecord.FieldCount; i++)
             {
                 if (dataRecord.GetName(i).IsEqualTo(columnName))

@@ -29,7 +29,20 @@ namespace Starter.Framework.Clients
             return restResponse.Data ?? new List<T>();
         }
 
-        public async Task AddAsync<T>(T entity)
+        public async Task<T> GetByIdAsync<T>(Guid id)
+        {
+            var request = new RestRequest(_resourceUrl, Method.GET);
+            request.AddParameter(nameof(id), id);
+
+            var cancellationTokenSource = new CancellationTokenSource();
+
+            var restResponse =
+                await _client.ExecuteTaskAsync<T>(request, cancellationTokenSource.Token);
+
+            return restResponse.Data;
+        }
+
+        public async Task CreateAsync<T>(T entity)
         {
             await SendEntity(entity, Method.POST);
         }
