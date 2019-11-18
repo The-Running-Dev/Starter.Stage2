@@ -36,21 +36,39 @@ namespace Starter.Framework.Tests.Extensions
         }
 
         [Test]
-        public void Verify__StringIsNotEmpty_Successful()
+        public void IsEmpty_IsFalseForNonEmptyString_Successful()
         {
             "Ben".IsEmpty().Should().BeFalse();
         }
 
         [Test]
-        public void Verify_EmptyStringIsEmpty_Successful()
+        public void IsEmpty_IsTrueForForEmptyString_Successful()
         {
             "".IsEmpty().Should().BeTrue();
         }
 
         [Test]
-        public void Verify__WhiteSpaceIsEmpty_Successful()
+        public void IsEmpty_IsTrueForWhiteSpaceIsString_Successful()
         {
             "     ".IsEmpty().Should().BeTrue();
+        }
+
+        [Test]
+        public void IsNotEmpty_IsTrueForNotEmptyString_Successful()
+        {
+            "Ben".IsNotEmpty().Should().BeTrue();
+        }
+
+        [Test]
+        public void IsNotEmpty_IsFalseForEmptyString_Successful()
+        {
+            "".IsNotEmpty().Should().BeFalse();
+        }
+
+        [Test]
+        public void IsNotEmpty_IsFalseForWhiteSpaceString_Successful()
+        {
+            "     ".IsNotEmpty().Should().BeFalse();
         }
     }
 }

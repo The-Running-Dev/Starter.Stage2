@@ -9,7 +9,7 @@ namespace Starter.WPF
     {
         //protected MainViewModel ViewModel;
 
-        public MainWindow(ICatsViewModel viewModel)
+        public MainWindow(IMainViewModel viewModel)
         {
             InitializeComponent();
 

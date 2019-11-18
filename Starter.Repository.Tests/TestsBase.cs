@@ -47,9 +47,9 @@ namespace Starter.Repository.Tests
         {
             Cats = new List<Cat>
             {
-                new Cat { Id = Guid.NewGuid(), Name  = "Widget", AbilityId = (int)Ability.Eating },
-                new Cat { Id = Guid.NewGuid(), Name  = "Garfield", AbilityId = (int)Ability.Engineering },
-                new Cat { Id = Guid.NewGuid(), Name  = "Mr. Boots", AbilityId = (int)Ability.Lounging }
+                new Cat { Id = Guid.NewGuid(), Name  = "Widget", AbilityId = Ability.Eating },
+                new Cat { Id = Guid.NewGuid(), Name  = "Garfield", AbilityId = Ability.Engineering },
+                new Cat { Id = Guid.NewGuid(), Name  = "Mr. Boots", AbilityId = Ability.Lounging }
             };
 
             var connectionString = ConfigurationManager.ConnectionStrings["DatabaseConnection"].ConnectionString;

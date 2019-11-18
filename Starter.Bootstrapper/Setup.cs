@@ -6,7 +6,7 @@ using Unity;
 using Unity.Injection;
 using Unity.RegistrationByConvention;
 using Microsoft.Extensions.DependencyInjection;
-
+using Starter.Data.Commands;
 using Starter.Data.ViewModels;
 using Starter.Data.Connections;
 using Starter.Data.Repositories;
@@ -51,7 +51,7 @@ namespace Starter.Bootstrapper
             container.RegisterType<IApiClient, ApiClient>(new InjectionConstructor(apiUrl, resourceUrl));
 
             container.RegisterType<ICatRepository, CatRepository>();
-            container.RegisterType<ICatsViewModel, CatsViewModel>();
+            container.RegisterType<IMainViewModel, MainViewModel>();
 
             container.RegisterTypes(
                 AllClasses.FromAssembliesInBasePath(),
@@ -90,11 +90,7 @@ namespace Starter.Bootstrapper
             //        : WithName.Default(type), WithLifetime.ContainerControlled);
 
             container.RegisterTypes(new InterfaceToTypeConvention(container, Assembly.GetExecutingAssembly()));
-
-            //container.RegisterType<ICatRepository, CatRepository>();
-            //container.RegisterType<IHttpClientFactory, HttpClientFactory>();
-            //container.RegisterType<ICatsViewModel, CatsViewModel>();
-
+            
             IocWrapper.Instance = new IocWrapper(container);
         }
     }

@@ -6,8 +6,8 @@
     public enum Ability
     {
         Eating = 1,
-        Napping,
+        Engineering,
         Lounging,
-        Engineering
+        Napping
     }
 }

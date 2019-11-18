@@ -7,6 +7,6 @@
     {
         public string Name { get; set; }
 
-        public int AbilityId { get; set; }
+        public Ability AbilityId { get; set; }
     }
 }

@@ -7,11 +7,6 @@ namespace Starter.Framework.Extensions
     /// </summary>
     public static class StringExtensions
     {
-        //public static IDbDataParameter Add(this string name, object value)
-        //{
-        //    var list = new List<Dictionary<string, object>> { new Dictionary<string, object> { { nameof(name), value } } };
-        //}
-
         /// <summary>
         /// Compares two strings for equality, ignoring case
         /// </summary>
@@ -24,13 +19,23 @@ namespace Starter.Framework.Extensions
         }
 
         /// <summary>
-        /// Check if string is empty, null or white space
+        /// Checks if string is empty, null or white space
         /// </summary>
-        /// <param name="first"></param>
+        /// <param name="value"></param>
         /// <returns></returns>
-        public static bool IsEmpty(this string first)
+        public static bool IsEmpty(this string value)
         {
-            return string.IsNullOrEmpty(first) || string.IsNullOrWhiteSpace(first);
+            return string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value);
+        }
+
+        /// <summary>
+        /// Checks if string is not empty, null or white space
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static bool IsNotEmpty(this string value)
+        {
+            return !string.IsNullOrEmpty(value) && !string.IsNullOrWhiteSpace(value);
         }
     }
 }

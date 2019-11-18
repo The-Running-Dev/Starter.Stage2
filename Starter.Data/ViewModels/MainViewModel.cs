@@ -1,23 +1,55 @@
 ﻿using System;
 using System.Linq;
+using System.Windows.Input;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
+using Starter.Data.Commands;
 using Starter.Data.Entities;
 using Starter.Framework.Clients;
+using Starter.Framework.Extensions;
 
 namespace Starter.Data.ViewModels
 {
-    public class CatsViewModel : ICatsViewModel
+    public class MainViewModel : IMainViewModel
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
         public bool IsCatSelected => _selectedCat != null;
 
+        public bool IsLoading
+        {
+            get => _isLoading;
+
+            set
+            {
+                _isLoading = value;
+
+                OnPropertyChanged(nameof(IsLoading));
+            }
+        }
+
+        private bool AllowSave
+        {
+            get
+            {
+                if (SelectedCat == null) return false;
+
+                return SelectedCat.AbilityId != 0 && SelectedCat.Name.IsNotEmpty();
+            }
+        }
+
+        public ICommand CreateCommand { get; set; }
+
+        public ICommand SaveCommand { get; set; }
+
+        public ICommand DeleteCommand { get; set; }
+
         public Cat SelectedCat
         {
             get => _selectedCat;
+
             set => GetById(value.Id);
         }
 
@@ -45,41 +77,89 @@ namespace Starter.Data.ViewModels
             }
         }
 
-        public CatsViewModel(IApiClient apiClient)
+        public MainViewModel(IApiClient apiClient)
         {
             _apiClient = apiClient;
+
+            CreateCommand = new CatCommand(Create, param => !_isNew);
+            SaveCommand = new CatCommand(Save, canExecute => AllowSave);
+            DeleteCommand = new CatCommand(Delete, canExecute => IsCatSelected && !_isNew);
+
+            Abilities = new ObservableCollection<object>(GetEnum<Ability>());
 
             GetAll();
         }
 
         private async void GetAll()
         {
+            IsLoading = true;
+
             Cats = new ObservableCollection<IEntity>(await _apiClient.GetAllAsync<Cat>());
-            Abilities = new ObservableCollection<object>(GetEnum<Ability>());
+
+            IsLoading = false;
         }
 
         public async void GetById(Guid id)
         {
+            IsLoading = true;
+
             _selectedCat = await _apiClient.GetByIdAsync<Cat>(id);
+
+            OnPropertyChanged(nameof(SelectedCat));
+            OnPropertyChanged(nameof(IsCatSelected));
+
+            IsLoading = false;
+        }
+
+        private void Create(object obj)
+        {
+            _isNew = true;
+
+            _selectedCat = new Cat
+            {
+                Id = Guid.NewGuid(),
+                AbilityId = 0
+            };
 
             OnPropertyChanged(nameof(SelectedCat));
             OnPropertyChanged(nameof(IsCatSelected));
         }
 
-        public async void Save()
+        private async void Save(object obj)
         {
-            await _apiClient.CreateAsync(SelectedCat);
+            IsLoading = true;
 
-            SelectedCat = new Cat();
-            Cats = new ObservableCollection<IEntity>(await _apiClient.GetAllAsync<IEntity>());
+            if (_isNew)
+            {
+                await _apiClient.CreateAsync(SelectedCat);
+            }
+            else
+            {
+                await _apiClient.UpdateAsync(SelectedCat);
+            }
+
+            ResetSelection();
+
+            GetAll();
         }
 
-        public async void Delete()
+        public async void Delete(object obj)
         {
+            IsLoading = true;
+
             await _apiClient.DeleteAsync(SelectedCat.Id);
 
-            SelectedCat = new Cat();
-            Cats = new ObservableCollection<IEntity>(await _apiClient.GetAllAsync<IEntity>());
+            ResetSelection();
+
+            GetAll();
+        }
+
+        private void ResetSelection()
+        {
+            _selectedCat = null;
+
+            OnPropertyChanged(nameof(SelectedCat));
+            OnPropertyChanged(nameof(IsCatSelected));
         }
 
         private void OnPropertyChanged(string propertyName)
@@ -116,5 +196,9 @@ namespace Starter.Data.ViewModels
         private Cat _selectedCat;
 
         private readonly IApiClient _apiClient;
+
+        private bool _isLoading;
+
+        private bool _isNew;
     }
 }

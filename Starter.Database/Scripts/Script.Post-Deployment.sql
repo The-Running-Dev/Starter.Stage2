@@ -3,9 +3,10 @@ go
 
 merge into Abilities as target
 using (values
-	(1, N'Napping'),
-	(2, N'Eating'),
-	(3, N'Engineering')
+	(1, N'Eating'),
+	(2, N'Engineering'),
+	(3, N'Lounging'),
+	(4, N'Napping')
 )
 as source (Id, Name)
 on target.Id = source.Id
