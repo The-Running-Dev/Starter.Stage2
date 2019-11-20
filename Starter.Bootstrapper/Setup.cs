@@ -6,7 +6,7 @@ using Unity;
 using Unity.Injection;
 using Unity.RegistrationByConvention;
 using Microsoft.Extensions.DependencyInjection;
-using Starter.Data.Commands;
+
 using Starter.Data.ViewModels;
 using Starter.Data.Connections;
 using Starter.Data.Repositories;
@@ -44,7 +44,7 @@ namespace Starter.Bootstrapper
             var container = new UnityContainer();
 
             var connection = ConfigurationManager.ConnectionStrings["DatabaseConnection"]?.ConnectionString;
-            var apiUrl = ConfigurationManager.AppSettings["ApiUrl"];
+            var apiUrl = ConfigurationManager.AppSettings["ApiUrlLocalIIS"];
             var resourceUrl = ConfigurationManager.AppSettings["ResourceUrl"];
 
             container.RegisterType<IConnection, Connection>(new InjectionConstructor(connection));
@@ -72,7 +72,6 @@ namespace Starter.Bootstrapper
                     // Otherwise, no special consideration is needed
                     return new InjectionMember[0];
                 });
-
 
             //container.RegisterTypes(
             //    AllClasses.FromAssemblies(),

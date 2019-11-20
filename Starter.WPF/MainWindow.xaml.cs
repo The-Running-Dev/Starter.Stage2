@@ -7,8 +7,6 @@ namespace Starter.WPF
     /// </summary>
     public partial class MainWindow
     {
-        //protected MainViewModel ViewModel;
-
         public MainWindow(IMainViewModel viewModel)
         {
             InitializeComponent();
