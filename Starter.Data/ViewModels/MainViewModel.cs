@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Linq;
 using System.Windows.Input;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-
+using System.Threading.Tasks;
 using Starter.Data.Commands;
 using Starter.Data.Entities;
 using Starter.Framework.Clients;
@@ -12,33 +11,33 @@ using Starter.Framework.Extensions;
 
 namespace Starter.Data.ViewModels
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class MainViewModel : IMainViewModel
     {
         public event PropertyChangedEventHandler PropertyChanged;
-
-        public bool IsCatSelected => _selectedCat != null;
-
-        public bool IsLoading
-        {
-            get => _isLoading;
-
-            set
-            {
-                _isLoading = value;
-
-                OnPropertyChanged(nameof(IsLoading));
-            }
-        }
 
         private bool AllowSave
         {
             get
             {
-                if (SelectedCat == null) return false;
+                if (SelectedCat == null)
+                {
+                    return false;
+                }
 
                 return SelectedCat.AbilityId != 0 && SelectedCat.Name.IsNotEmpty();
             }
         }
+
+        public bool IsCatSelected => _selectedCat != null;
+
+        public PropertyObservable<bool> IsCreating { get; set; }
+
+        public PropertyObservable<bool> IsLoading { get; set; }
+
+        public PropertyObservable<bool> IsNameFocused { get; set; }
 
         public ICommand CreateCommand { get; set; }
 
@@ -46,11 +45,23 @@ namespace Starter.Data.ViewModels
 
         public ICommand DeleteCommand { get; set; }
 
+        public ICommand CancelCommand { get; set; }
+
+        public List<object> Abilities { get; set; }
+
         public Cat SelectedCat
         {
             get => _selectedCat;
 
-            set => GetById(value.Id);
+            set
+            {
+                IsNameFocused.Value = false;
+                IsCreating.Value = false;
+
+                GetById(value.Id);
+
+                IsNameFocused.Value = true;
+            }
         }
 
         public ObservableCollection<IEntity> Cats
@@ -65,101 +76,90 @@ namespace Starter.Data.ViewModels
             }
         }
 
-        public ObservableCollection<object> Abilities
-        {
-            get => _abilities;
-
-            set
-            {
-                _abilities = value;
-
-                OnPropertyChanged(nameof(Abilities));
-            }
-        }
-
         public MainViewModel(IApiClient apiClient)
         {
             _apiClient = apiClient;
 
-            CreateCommand = new CatCommand(Create, param => !_isNew);
+            IsCreating = new PropertyObservable<bool>(false);
+            IsLoading = new PropertyObservable<bool>(false);
+            IsNameFocused = new PropertyObservable<bool>(false);
+
+            CreateCommand = new CatCommand(Create, param => !IsCreating.Value);
             SaveCommand = new CatCommand(Save, canExecute => AllowSave);
-            DeleteCommand = new CatCommand(Delete, canExecute => IsCatSelected && !_isNew);
+            DeleteCommand = new CatCommand(Delete, canExecute => IsCatSelected && !IsCreating.Value);
+            CancelCommand = new CatCommand(ResetSelection, canExecute => IsCatSelected || IsCreating.Value);
 
-            Abilities = new ObservableCollection<object>(GetEnum<Ability>());
-
+            Abilities = new List<object>(typeof(Ability).ToNameValueList());
+            
             GetAll();
         }
 
-        private async void GetAll()
+        public async Task GetAll()
         {
-            IsLoading = true;
+            IsLoading.Value = true;
 
-            Cats = new ObservableCollection<IEntity>(await _apiClient.GetAllAsync<Cat>());
+            Cats = new ObservableCollection<IEntity>(await _apiClient.GetAll<Cat>());
 
-            IsLoading = false;
+            IsLoading.Value = false;
         }
 
-        public async void GetById(Guid id)
+        public async Task GetById(Guid id)
         {
-            IsLoading = true;
+            IsLoading.Value = true;
 
-            _selectedCat = await _apiClient.GetByIdAsync<Cat>(id);
+            _selectedCat = await _apiClient.GetById<Cat>(id);
 
             OnPropertyChanged(nameof(SelectedCat));
             OnPropertyChanged(nameof(IsCatSelected));
 
-            IsLoading = false;
+            IsLoading.Value = false;
         }
 
-        private void Create(object obj)
+        public void Create()
         {
-            _isNew = true;
+            IsCreating.Value = true;
+            IsNameFocused.Value = false;
 
+            //_selectedCat = parameter;
             _selectedCat = new Cat
             {
                 Id = Guid.NewGuid(),
                 AbilityId = 0
             };
 
+            IsNameFocused.Value = true;
+
             OnPropertyChanged(nameof(SelectedCat));
             OnPropertyChanged(nameof(IsCatSelected));
         }
 
-        private async void Save(object obj)
+        public async void Save()
         {
-            IsLoading = true;
+            IsLoading.Value = true;
 
-            if (_isNew)
+            if (IsCreating.Value)
             {
-                await _apiClient.CreateAsync(SelectedCat);
+                await _apiClient.Create(SelectedCat);
             }
             else
             {
-                await _apiClient.UpdateAsync(SelectedCat);
+                await _apiClient.Update(SelectedCat);
             }
 
             ResetSelection();
 
-            GetAll();
+            await GetAll();
         }
 
-        public async void Delete(object obj)
+        public async void Delete()
         {
-            IsLoading = true;
+            IsLoading.Value = true;
 
-            await _apiClient.DeleteAsync(SelectedCat.Id);
+            await _apiClient.Delete(SelectedCat.Id);
 
             ResetSelection();
 
-            GetAll();
-        }
-
-        private void ResetSelection()
-        {
-            _selectedCat = null;
-
-            OnPropertyChanged(nameof(SelectedCat));
-            OnPropertyChanged(nameof(IsCatSelected));
+            await GetAll();
         }
 
         private void OnPropertyChanged(string propertyName)
@@ -167,38 +167,19 @@ namespace Starter.Data.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private static IEnumerable<object> GetEnum<T>()
+        private void ResetSelection()
         {
-            var type = typeof(T);
-            var names = Enum.GetNames(type);
-            var values = Enum.GetValues(type);
-            var pairs =
-                Enumerable.Range(0, names.Length)
-                    .Select(i => new
-                    {
-                        Name = (string)names.GetValue(i),
-                        Value = (int)values.GetValue(i)
-                    });
+            _selectedCat = null;
+            IsCreating.Value = false;
 
-            pairs.Append(new
-            {
-                Name = string.Empty,
-                Value = -1
-            });
-
-            return pairs.OrderBy(pair => pair.Name);
+            OnPropertyChanged(nameof(SelectedCat));
+            OnPropertyChanged(nameof(IsCatSelected));
         }
 
         private ObservableCollection<IEntity> _cats;
 
-        private ObservableCollection<object> _abilities;
-
         private Cat _selectedCat;
 
         private readonly IApiClient _apiClient;
-
-        private bool _isLoading;
-
-        private bool _isNew;
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
-
+using Starter.Data.Entities;
 using Starter.Framework.Clients;
 
 namespace Starter.Data.Commands
@@ -27,12 +27,12 @@ namespace Starter.Data.Commands
 
         private event EventHandler CanExecuteChangedInternal;
 
-        public CatCommand(Action<object> execute)
+        public CatCommand(Action execute)
             : this(execute, DefaultCanExecute)
         {
         }
 
-        public CatCommand(Action<object> execute, Predicate<object> canExecute)
+        public CatCommand(Action execute, Predicate<object> canExecute)
         {
             _execute = execute ?? throw new ArgumentNullException(nameof(execute));
             _canExecute = canExecute ?? throw new ArgumentNullException(nameof(canExecute));
@@ -59,7 +59,7 @@ namespace Starter.Data.Commands
 
         public void Execute(object parameter)
         {
-            _execute(parameter);
+            _execute();
         }
 
         public void OnCanExecuteChanged()
@@ -69,19 +69,13 @@ namespace Starter.Data.Commands
             handler?.Invoke(this, EventArgs.Empty);
         }
 
-        public void Destroy()
-        {
-            _canExecute = _ => false;
-            _execute = _ => { };
-        }
-
         private static bool DefaultCanExecute(object parameter)
         {
             return true;
         }
 
-        private Action<object> _execute;
+        private readonly Action _execute;
 
-        private Predicate<object> _canExecute;
+        private readonly Predicate<object> _canExecute;
     }
 }
