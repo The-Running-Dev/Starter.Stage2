@@ -1,15 +1,15 @@
-﻿using System;
-using System.Data;
-using System.Data.Common;
+﻿using System.Data;
 using System.Data.SqlClient;
-using FluentAssertions;
+
 using NUnit.Framework;
+using FluentAssertions;
+
 using Starter.Framework.Extensions;
 
 namespace Starter.Framework.Tests.Extensions
 {
     /// <summary>
-    /// Tests for the StringExtensions class
+    /// Tests for the DbCommandExtensions class
     /// </summary>
     [TestFixture]
     public class DbCommandExtensionsTests
@@ -25,7 +25,6 @@ namespace Starter.Framework.Tests.Extensions
         }
 
         [Test]
-        //public void Should_Add_Single_Parameter_to_Command()
         public void Add_SingleParameterToCommand_Successful()
         {
             var command = new SqlConnection().CreateCommand();

@@ -10,31 +10,31 @@ using Starter.Framework.Extensions;
 namespace Starter.Framework.Tests.Extensions
 {
     /// <summary>
-    /// Tests for the StringExtensions class
+    /// Tests for the DataRecordExtensions class
     /// </summary>
     [TestFixture]
     public class DataRecordExtensionsTests: TestsBase
     {
         [Test]
-        public void Verify_ColumnDoesNotExist_Successful()
+        public void HasColumn_ColumnDoesNotExist_Successful()
         {
             SqlDataRecord.HasColumn("Age").Should().BeFalse();
         }
 
         [Test]
-        public void Verify_ColumnExist_Successful()
+        public void HasColumn_ColumnExist_Successful()
         {
             SqlDataRecord.HasColumn("Name").Should().BeTrue();
         }
 
         [Test]
-        public void Verify_ColumnExistWithDifferentCaseName_Successful()
+        public void HasColumn_ColumnExistWithDifferentCaseName_Successful()
         {
             SqlDataRecord.HasColumn("name").Should().BeTrue();
         }
 
         [Test]
-        public void Verify_WhenNullColumnDoesNotExist_Successful()
+        public void HasColumn_WhenNullColumnDoesNotExist_Successful()
         {
             SqlDataRecord record = null;
 

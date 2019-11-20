@@ -6,13 +6,13 @@ using Starter.Framework.Extensions;
 namespace Starter.Framework.Tests.Extensions
 {
     /// <summary>
-    /// Tests for the StringExtensions class
+    /// Tests for the ObjectExtensions class
     /// </summary>
     [TestFixture]
     public class ObjectExtensionsTests
     {
         [Test]
-        public void Convert_ObjectToJson_Successful()
+        public void ToJson_Convert_Successful()
         {
             dynamic entity = new { Id = 1, Name = "Name" };
 
@@ -20,7 +20,7 @@ namespace Starter.Framework.Tests.Extensions
         }
 
         [Test]
-        public void Convert_ObjectToJsonWithFormatting_Successful()
+        public void ToJson_ConvertWithFormatting_Successful()
         {
             dynamic entity = new { Id = 1, Name = "Name" };
 
@@ -28,6 +28,12 @@ namespace Starter.Framework.Tests.Extensions
             
             json.Should().NotBeEmpty();
             json.Should().Contain("\"Id\": 1");
+        }
+
+        [Test]
+        public void ToNameValueList_OnEnum_Successful()
+        {
+
         }
     }
 }
