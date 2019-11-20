@@ -12,6 +12,9 @@ using Starter.Data.Repositories;
 
 namespace Starter.Repository.Tests
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [SetUpFixture]
     public class TestsBase
     {

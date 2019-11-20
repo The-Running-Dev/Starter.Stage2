@@ -7,6 +7,9 @@ using Starter.Bootstrapper;
 
 namespace Starter.Framework.Tests
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [SetUpFixture]
     public class TestsBase
     {
