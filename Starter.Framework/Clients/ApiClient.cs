@@ -18,7 +18,7 @@ namespace Starter.Framework.Clients
             _client = new RestClient(apiUrl);
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync<T>()
+        public async Task<IEnumerable<T>> GetAll<T>()
         {
             var request = new RestRequest(_resourceUrl, Method.GET);
             var cancellationTokenSource = new CancellationTokenSource();
@@ -29,7 +29,7 @@ namespace Starter.Framework.Clients
             return restResponse.Data ?? new List<T>();
         }
 
-        public async Task<T> GetByIdAsync<T>(Guid id)
+        public async Task<T> GetById<T>(Guid id)
         {
             var request = new RestRequest(_resourceUrl, Method.GET);
             request.AddParameter(nameof(id), id);
@@ -42,17 +42,17 @@ namespace Starter.Framework.Clients
             return restResponse.Data;
         }
 
-        public async Task CreateAsync<T>(T entity)
+        public async Task Create<T>(T entity)
         {
             await SendEntity(entity, Method.POST);
         }
 
-        public async Task UpdateAsync<T>(T entity)
+        public async Task Update<T>(T entity)
         {
             await SendEntity(entity, Method.PUT);
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task Delete(Guid id)
         {
             var request = new RestRequest(_resourceUrl, Method.DELETE);
             var cancellationTokenSource = new CancellationTokenSource();

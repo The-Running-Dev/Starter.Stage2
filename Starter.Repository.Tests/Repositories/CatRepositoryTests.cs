@@ -23,19 +23,19 @@ namespace Starter.Repository.Tests.Repositories
 
         [Test]
         [Category("Integration")]
-        public async Task Get_AllCats_Successful()
+        public async Task GetAll_Cats_Successful()
         {
-            var cats = await CatRepository.GetAllAsync();
+            var cats = await CatRepository.GetAll();
 
             cats.Count().Should().BeGreaterThan(0);
         }
 
         [Test]
         [Category("Integration")]
-        public async Task Get_CatById_Successful()
+        public async Task CatById_ForCatId_Successful()
         {
             var cat = Cats.FirstOrDefault();
-            var existingCat = await CatRepository.GetByIdAsync(cat.Id);
+            var existingCat = await CatRepository.GetById(cat.Id);
 
             existingCat.Name.Should().Be(cat.Name);
         }
@@ -47,9 +47,9 @@ namespace Starter.Repository.Tests.Repositories
             var cat = new Cat { Id = Guid.NewGuid(), Name = Guid.NewGuid().ToString(), AbilityId = Ability.Napping };
 
             Cats.Add(cat);
-            await CatRepository.CreateAsync(cat);
+            await CatRepository.Create(cat);
 
-            var existingCat = await CatRepository.GetByIdAsync(cat.Id);
+            var existingCat = await CatRepository.GetById(cat.Id);
 
             existingCat.Id.Should().Be(cat.Id);
         }
@@ -61,9 +61,9 @@ namespace Starter.Repository.Tests.Repositories
             var cat = Cats.FirstOrDefault();
             cat.Name = Guid.NewGuid().ToString();
 
-            await CatRepository.UpdateAsync(cat);
+            await CatRepository.Update(cat);
 
-            var existingCat = await CatRepository.GetByIdAsync(cat.Id);
+            var existingCat = await CatRepository.GetById(cat.Id);
 
             existingCat.Id.Should().Be(cat.Id);
         }
@@ -75,29 +75,29 @@ namespace Starter.Repository.Tests.Repositories
             var cat = Cats.FirstOrDefault();
             cat.Name = Guid.NewGuid().ToString();
 
-            await CatRepository.DeleteAsync(cat.Id);
+            await CatRepository.Delete(cat.Id);
             Cats.Remove(cat);
 
-            var existingCat = await CatRepository.GetByIdAsync(cat.Id);
+            var existingCat = await CatRepository.GetById(cat.Id);
 
             existingCat.Should().BeNull();
         }
 
         [Test]
         [Category("Integration")]
-        public async Task Get_AllCatsGet3Cats_Successful()
+        public async Task GetAll_Gets3Cats_Successful()
         {
-            var results = await CatRepository.GetAllAsync();
+            var results = await CatRepository.GetAll();
 
             results.Count().Should().BeGreaterThan(0);
         }
 
         [Test]
         [Category("Integration")]
-        public async Task Get_AllCatsSpecificCatExists_Successful()
+        public async Task GetAll_SpecificCatExists_Successful()
         {
             var cat = Cats.FirstOrDefault();
-            var cats = await CatRepository.GetAllAsync();
+            var cats = await CatRepository.GetAll();
 
             cats.FirstOrDefault(x => x.Name == cat.Name).Should().NotBeNull();
         }

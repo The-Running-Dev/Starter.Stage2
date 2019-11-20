@@ -6,14 +6,14 @@ namespace Starter.Framework.Clients
 {
     public interface IApiClient
     {
-        Task<IEnumerable<T>> GetAllAsync<T>();
+        Task<IEnumerable<T>> GetAll<T>();
 
-        Task<T> GetByIdAsync<T>(Guid id);
+        Task<T> GetById<T>(Guid id);
 
-        Task CreateAsync<T>(T entity);
+        Task Create<T>(T entity);
 
-        Task UpdateAsync<T>(T entity);
+        Task Update<T>(T entity);
 
-        Task DeleteAsync(Guid id);
+        Task Delete(Guid id);
     }
 }

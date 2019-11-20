@@ -18,31 +18,31 @@ namespace Starter.API.Controllers
         // GET api/cat
         public async Task<IEnumerable<Cat>> GetAll()
         {
-            return await _repository.GetAllAsync();
+            return await _repository.GetAll();
         }
 
         // GET api/cat/5
         public async Task<Cat> GetById(Guid id)
         {
-            return await _repository.GetByIdAsync(id);
+            return await _repository.GetById(id);
         }
 
         // POST api/cat
         public async Task Post([FromBody] Cat entity)
         {
-            await _repository.CreateAsync(entity);
+            await _repository.Create(entity);
         }
 
         // PUT api/cat/{id}
         public async Task Put([FromBody] Cat entity)
         {
-            await _repository.UpdateAsync(entity);
+            await _repository.Update(entity);
         }
 
         // DELETE api/cat/{id}
         public async Task Delete(Guid id)
         {
-            await _repository.DeleteAsync(id);
+            await _repository.Delete(id);
         }
 
         private readonly ICatRepository _repository;

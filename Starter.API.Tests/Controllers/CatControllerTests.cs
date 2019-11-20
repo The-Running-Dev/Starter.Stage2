@@ -9,11 +9,12 @@ using Starter.Data.Entities;
 
 namespace Starter.API.Tests.Controllers
 {
+    ///
     [TestFixture]
     public class CatControllerTests : TestsBase
     {
         [Test]
-        public async Task Get_AllCats_Successful()
+        public async Task GetAll_Cats_Successful()
         {
             var entities = await CatController.GetAll();
             var enumerable = entities as Cat[] ?? entities.ToArray();
@@ -22,7 +23,7 @@ namespace Starter.API.Tests.Controllers
         }
 
         [Test]
-        public async Task Get_CatById_Successful()
+        public async Task GetCatById_ForCatId_Successful()
         {
             var lastCat = Cats.LastOrDefault();
             var cat = await CatController.GetById(lastCat.Id);

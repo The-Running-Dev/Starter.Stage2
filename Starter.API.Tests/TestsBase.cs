@@ -13,6 +13,9 @@ using Starter.Data.Repositories;
 
 namespace Starter.API.Tests
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [SetUpFixture]
     public class TestsBase
     {
@@ -30,19 +33,19 @@ namespace Starter.API.Tests
             var catRepository = new Mock<ICatRepository>();
 
             // Setup the cat repository
-            catRepository.Setup(x => x.GetAllAsync()).Returns(Task.FromResult(Cats.AsEnumerable()));
+            catRepository.Setup(x => x.GetAll()).Returns(Task.FromResult(Cats.AsEnumerable()));
 
-            catRepository.Setup(x => x.GetByIdAsync(It.IsAny<Guid>()))
+            catRepository.Setup(x => x.GetById(It.IsAny<Guid>()))
                 .Returns((Guid id) => { return Task.FromResult(Cats.FirstOrDefault(x => x.Id == id)); });
 
-            catRepository.Setup(x => x.CreateAsync(It.IsAny<Cat>()))
+            catRepository.Setup(x => x.Create(It.IsAny<Cat>()))
                 .Returns((Cat entity) =>
                 {
                     Cats.Add(entity);
                     return Task.CompletedTask;
                 });
             
-            catRepository.Setup(x => x.DeleteAsync(It.IsAny<Guid>()))
+            catRepository.Setup(x => x.Delete(It.IsAny<Guid>()))
                 .Returns((Guid id) =>
                 {
                     Cats.Remove(Cats.FirstOrDefault(x=>x.Id == id));

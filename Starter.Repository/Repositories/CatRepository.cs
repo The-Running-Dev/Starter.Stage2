@@ -20,19 +20,19 @@ namespace Starter.Repository.Repositories
         {
         }
 
-        public async Task<IEnumerable<Cat>> GetAllAsync()
+        public async Task<IEnumerable<Cat>> GetAll()
         {
             return await ExecuteQueryAsync<Cat>(GetAllSp);
         }
 
-        public async Task<Cat> GetByIdAsync(Guid id)
+        public async Task<Cat> GetById(Guid id)
         {
             var entities = await ExecuteQueryAsync<Cat>(GetByIdSp, new IDbDataParameter[] { new SqlParameter("id", id) });
 
             return entities.FirstOrDefault();
         }
 
-        public async Task CreateAsync(Cat entity)
+        public async Task Create(Cat entity)
         {
             await ExecuteNonQueryAsync(CreateSp, new IDbDataParameter[]
             {
@@ -42,7 +42,7 @@ namespace Starter.Repository.Repositories
             });
         }
 
-        public async Task UpdateAsync(Cat entity)
+        public async Task Update(Cat entity)
         {
             await ExecuteNonQueryAsync(UpdateSp, new IDbDataParameter[]
             {
@@ -52,7 +52,7 @@ namespace Starter.Repository.Repositories
             });
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task Delete(Guid id)
         {
             await ExecuteNonQueryAsync(DeleteSp, new IDbDataParameter[]
             {

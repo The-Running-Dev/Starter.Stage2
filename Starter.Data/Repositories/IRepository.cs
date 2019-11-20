@@ -12,20 +12,14 @@ namespace Starter.Data.Repositories
     /// <typeparam name="TEntity"></typeparam>
     public interface IRepository<TEntity> where TEntity : IEntity
     {
-        //Task<IEnumerable<TEntity>> ExecuteQueryAsync(string sql, IDbDataParameter[] parameters = null);
+        Task<IEnumerable<TEntity>> GetAll();
 
-        //Task ExecuteNonQueryAsync(string sql, IDbDataParameter[] parameters = null);
+        Task<TEntity> GetById(Guid id);
 
-        //Task<IEnumerable<TEntity>> ExecuteReader(IDbCommand command);
+        Task Create(TEntity entity);
 
-        Task<IEnumerable<TEntity>> GetAllAsync();
+        Task Update(TEntity entity);
 
-        Task<TEntity> GetByIdAsync(Guid id);
-
-        Task CreateAsync(TEntity entity);
-
-        Task UpdateAsync(TEntity entity);
-
-        Task DeleteAsync(Guid id);
+        Task Delete(Guid id);
     }
 }

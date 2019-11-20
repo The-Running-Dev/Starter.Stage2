@@ -11,12 +11,14 @@ namespace Starter.Data.Services
     /// </summary>
     public interface ICatService
     {
-        Task<IEnumerable<Cat>> GetAllAsync();
+        Task<IEnumerable<Cat>> GetAll();
 
-        Task<Cat> GetByIdAsync(Guid id);
+        Task<Cat> GetById(Guid id);
 
-        Task SaveAsync(Cat entity);
+        Task Create(Cat entity);
 
-        Task DeleteAsync(Cat entity);
+        Task Update(Cat entity);
+
+        Task Delete(Guid id);
     }
 }
